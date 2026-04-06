@@ -3,9 +3,6 @@
 import { db } from "@/lib/prisma";
 import { subDays } from "date-fns";
 
-const ACCOUNT_ID = "account-id";
-const USER_ID = "user-id";
-
 // Categories with their typical amount ranges
 const CATEGORIES = {
   INCOME: [
@@ -44,6 +41,29 @@ function getRandomCategory(type) {
 
 export async function seedTransactions() {
   try {
+    // Create a test user
+    const testUser = await db.user.create({
+      data: {
+        clerkUserId: "test-clerk-user-123",
+        email: "test@finvista.com",
+        name: "Test User",
+        imageUrl: "https://api.dicebear.com/7.x/avataaars/svg?seed=Test",
+      },
+    });
+
+    // Create a test account for the user
+    const testAccount = await db.account.create({
+      data: {
+        name: "Test Savings Account",
+        type: "SAVINGS",
+        userId: testUser.id,
+        isDefault: true,
+      },
+    });
+
+    const USER_ID = testUser.id;
+    const ACCOUNT_ID = testAccount.id;
+
     // Generate 90 days of transactions
     const transactions = [];
     let totalBalance = 0;
@@ -82,11 +102,6 @@ export async function seedTransactions() {
 
     // Insert transactions in batches and update account balance
     await db.$transaction(async (tx) => {
-      // Clear existing transactions
-      await tx.transaction.deleteMany({
-        where: { accountId: ACCOUNT_ID },
-      });
-
       // Insert new transactions
       await tx.transaction.createMany({
         data: transactions,
@@ -101,7 +116,9 @@ export async function seedTransactions() {
 
     return {
       success: true,
-      message: `Created ${transactions.length} transactions`,
+      message: `Created ${transactions.length} transactions for user ${testUser.email}`,
+      userId: testUser.id,
+      accountId: testAccount.id,
     };
   } catch (error) {
     console.error("Error seeding transactions:", error);
