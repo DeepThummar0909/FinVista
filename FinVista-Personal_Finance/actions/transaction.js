@@ -54,7 +54,11 @@ export async function createTransaction(data) {
       throw new Error("User not found");
     }
 
-    const account = await db.account.findUnique({
+    if (!data.accountId) {
+      throw new Error("Account ID is required");
+    }
+
+    const account = await db.account.findFirst({
       where: {
         id: data.accountId,
         userId: user.id,
