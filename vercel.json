@@ -1,4 +1,4 @@
 {
-  "root": "FinVista-Personal_Finance",
-  "buildCommand": "npm run build"
+  "buildCommand": "cd FinVista-Personal_Finance && npm run build",
+  "installCommand": "cd FinVista-Personal_Finance && npm install"
 }
