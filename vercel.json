@@ -1,0 +1,4 @@
+{
+  "root": "FinVista-Personal_Finance",
+  "buildCommand": "npm run build"
+}
