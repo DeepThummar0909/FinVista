@@ -1,4 +1,5 @@
 {
   "buildCommand": "cd FinVista-Personal_Finance && npm run build",
-  "installCommand": "cd FinVista-Personal_Finance && npm install"
+  "installCommand": "cd FinVista-Personal_Finance && npm install",
+  "outputDirectory": "FinVista-Personal_Finance/.next"
 }
